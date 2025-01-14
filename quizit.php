@@ -9,6 +9,7 @@
 
 <body>
     <?php
+        
     ?>
     <script src="JS/Script.js"></script>
 </body></html>
