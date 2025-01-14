@@ -1,4 +1,4 @@
-START Application
+<!-- START Application
 
 DISPLAY "Login Page"
 DISPLAY "Please select your role:"
@@ -166,4 +166,4 @@ ELSE
     GOTO Login Page
 END IF
 
-END Application
+END Application -->
