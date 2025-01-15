@@ -5,9 +5,9 @@
 
   if(isset($_SESSION['key']))
   {
-    if(@$_GET['demail'] && $_SESSION['key']=='suryapinky') 
+    if(@$_GET['a'] && $_SESSION['key']=='Flo') 
     {
-      $demail=@$_GET['demail'];
+      $demail=@$_GET['a'];
       $r1 = mysqli_query($con,"DELETE FROM rank WHERE email='$demail' ") or die('Error');
       $r2 = mysqli_query($con,"DELETE FROM history WHERE email='$demail' ") or die('Error');
       $result = mysqli_query($con,"DELETE FROM user WHERE email='$demail' ") or die('Error');
@@ -195,6 +195,15 @@
     $q=mysqli_query($con,"UPDATE `rank` SET `score`=$sun ,time=NOW() WHERE email= '$email'")or die('Error174');
     header("location:welcome.php?q=quiz&step=2&eid=$eid&n=1&t=$t");
   }
+
+
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (empty($_POST['answer'])) {
+      echo "<script>alert('Please select an answer before proceeding.');</script>";
+    } else {
+        $selectedAnswer = $_POST['answer'];
+    }
+}
 ?>
 
 

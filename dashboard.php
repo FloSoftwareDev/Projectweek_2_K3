@@ -27,7 +27,6 @@
     <script src="js/jquery.js" type="text/javascript"></script>
     <script src="js/bootstrap.min.js"  type="text/javascript"></script>
 </head>
-
 <body>
     <nav class="navbar navbar-default title1">
         <div class="container-fluid">
@@ -50,8 +49,18 @@
                     <li><a href="dashboard.php?q=5">Remove Quiz</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li <?php echo''; ?> > <a href="logout1.php?q=dashboard.php"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Log out</a></li>
-                </ul>
+    <li>
+        <a href="profile.php">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Profile
+        </a>
+    </li>
+    <li>
+        <a href="logout1.php?q=dashboard.php">
+            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Log out
+        </a>
+    </li>
+</ul>
+
             </div>
         </div>
     </nav>
@@ -61,7 +70,7 @@
             <div class="col-md-12">
                 <?php if(@$_GET['q']==0)
                 {
-                   echo "<h1> WELCOME TO Admin Page!!
+                echo "<h1> WELCOME TO Admin Page!!
 					</h1>";
 					
                 }
@@ -212,7 +221,7 @@
                                 <div class="col-md-12"> 
                                     <input  type="submit" style="margin-left:45%" class="btn btn-primary" value="Submit" class="btn btn-primary"/>
                                 </div>
-                              </div>
+                            </div>
 
                         </fieldset>
                         </form></div>';
