@@ -5,24 +5,64 @@ if ($_SESSION['role'] !== 'student') {
     exit();
 }
 
-$questions = [
-    ['text' => 'What is 2 + 2?', 'A' => '3', 'B' => '4', 'C' => '5', 'correct' => 'B'],
-    ['text' => 'What is the capital of France?', 'A' => 'London', 'B' => 'Paris', 'C' => 'Berlin', 'correct' => 'B'],
-    ['text' => 'What is 10 / 2?', 'A' => '5', 'B' => '6', 'C' => '7', 'correct' => 'A'],
-];
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "Quizit";
 
+$conn = new mysqli($servername, $username, $password, $database); 
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch questions from the database
+$questions = [];
+$sql = "SELECT id, text, answerA, answerB, answerC, correct FROM questions";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $questions[] = $row;
+    }
+}
+
+// Handle quiz submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $score = 0;
+
     foreach ($questions as $index => $question) {
-        if ($_POST["answer$index"] === $question['correct']) {
+        $questionId = $question['id'];
+        $userAnswer = $_POST["answer$questionId"];
+
+        // Validate the answer against the database
+        $sql = "SELECT correct FROM questions WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $questionId);
+        $stmt->execute();
+        $stmt->bind_result($correctAnswer);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($userAnswer === $correctAnswer) {
             $score++;
         }
     }
+
+    // Save the score to the database
+    $studentName = $_SESSION['studentName'];
+    $stmt = $conn->prepare("INSERT INTO scores (student_name, score) VALUES (?, ?)");
+    $stmt->bind_param("si", $studentName, $score);
+    $stmt->execute();
+    $stmt->close();
+
     $_SESSION['score'] = $score;
     header('Location: quiz_result.php');
     exit();
 }
+
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,17 +75,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container">
     <h1>Welcome, <?= $_SESSION['studentName'] ?>!</h1>
     <form method="POST">
-        <?php foreach ($questions as $index => $question): ?>
+        <?php foreach ($questions as $question): ?>
             <div>
-                <h2>Question <?= $index + 1 ?>: <?= $question['text'] ?></h2>
+                <h2>Question <?= $question['id'] ?>: <?= $question['text'] ?></h2>
                 <label>
-                    <input type="radio" name="answer<?= $index ?>" value="A" required> A. <?= $question['A'] ?>
+                    <input type="radio" name="answer<?= $question['id'] ?>" value="A" required> A. <?= $question['answerA'] ?>
                 </label><br>
                 <label>
-                    <input type="radio" name="answer<?= $index ?>" value="B"> B. <?= $question['B'] ?>
+                    <input type="radio" name="answer<?= $question['id'] ?>" value="B"> B. <?= $question['answerB'] ?>
                 </label><br>
                 <label>
-                    <input type="radio" name="answer<?= $index ?>" value="C"> C. <?= $question['C'] ?>
+                    <input type="radio" name="answer<?= $question['id'] ?>" value="C"> C. <?= $question['answerC'] ?>
                 </label>
             </div>
         <?php endforeach; ?>
