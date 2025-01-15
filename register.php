@@ -16,9 +16,6 @@
 		$password = stripslashes($password);
 		$password = addslashes($password);
 
-		$college = $_POST['college'];
-		$college = stripslashes($college);
-		$college = addslashes($college);
 		$str="SELECT email from user WHERE email='$email'";
 		$result=mysqli_query($con,$str);
 		
